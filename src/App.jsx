@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios';
 import './App.css'
 
@@ -17,6 +17,11 @@ function App() {
   const [books, setBooks] = useState([]);
   const [formData, setForm] = useState(initialFormData);
 
+  function fetchData() {
+    axios.get(endpoint)
+      .then((res) => setBooks(res.data))
+  }
+
   function handleFormData(e) {
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
 
@@ -26,15 +31,29 @@ function App() {
     }))
   }
 
+
+
   function handleSubmit(e) {
     e.preventDefault();
 
-    const saveBooks = [...books, formData]
-    setBooks(saveBooks);
+    axios.post(endpoint, formData)
+      .then(res => {
+        setBooks([...books, res.data]);
+        console.log(res.data)
 
-    setForm(initialFormData);
+        console.log(books)
+        setForm(initialFormData);
+
+      })
+      .catch(err => {
+        console.error("Errore durante l'invio del post:", err);
+      })
+
+
 
   }
+
+  useEffect(fetchData, [])
 
 
   return (
