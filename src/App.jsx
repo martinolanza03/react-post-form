@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import axios from 'axios';
 import './App.css'
 
@@ -15,41 +15,26 @@ function App() {
 
 
   const [books, setBooks] = useState([]);
-  const [formData, setForm] = useState({
-    author: '',
-    title: '',
-    body: '',
-    public: false,
-
-  });
-
-  function fetchBooks() {
-    axios.get(endpoint)
-      .then((res) => setBooks(res.data));
-
-  }
+  const [formData, setForm] = useState(initialFormData);
 
   function handleFormData(e) {
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
 
-    setBooks(formData => ({
-      ...formData, [e.target.name]: value
-    }));
-
+    setForm((formData) => ({
+      ...formData,
+      [e.target.name]: value
+    }))
   }
 
   function handleSubmit(e) {
     e.preventDefault();
 
     const saveBooks = [...books, formData]
-
     setBooks(saveBooks);
 
     setForm(initialFormData);
 
   }
-
-  useEffect(fetchBooks, []);
 
 
   return (
@@ -65,7 +50,7 @@ function App() {
         <input type='text' value={formData.body} onChange={handleFormData} placeholder='Inserisci una descrizione del libro' id='body' name='body' />
         <br />
         <label htmlFor="aviable">Disponibile</label>
-        <input name="aviable" type="checkbox" checked={formData.public} onChange={handleFormData} id="aviable" />
+        <input type="checkbox" checked={formData.public} onChange={handleFormData} id="aviable" name="public" />
         <br />
         <button>Invia</button>
 
